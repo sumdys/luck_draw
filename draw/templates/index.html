@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}年度抽奖-{% endblock %}
+{% block extend_css %}
+<style rel="stylesheet">
+    body{
+        background-color: red;color: white;
+    }
+    .container{width: 90%;margin-top:50px;}
+    .left_div,.right_div{text-align:center;}
+    .table{text-align:center;width: 50%;}
+    .list-unstyled li{
+        margin-top: 30px;
+    }
+    .list-unstyled li a{padding: 5px 20px;font-size: 2em;}
+    table td{font-size: 1.5em;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-md-12 row">
+    <div class="col-md-3 left_div">
+        <h2>*年度抽奖*</h2>
+        {% csrf_token %}
+        <ul class="list-unstyled">
+            <li>
+                <a href="javascript:void(0);" class="btn btn-info" id="first_prize">一 等 奖</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" class="btn btn-info" id="second_prize">二 等 奖</a>
+            </li>
+            <li>
+                <a href="javascript:void(0);" class="btn btn-info" id="third_prize">三 等 奖</a>
+            </li>
+
+            <li>
+                <a href="/add/" class="btn btn-info">添 加</a>
+            </li>
+        </ul>
+
+    </div>
+    <div class="col-md-9 right_div">
+        <h2>*抽奖名单*</h2>
+        <div class="right_div">
+            <table class="table table-bordered" align="center">
+                <tbody id="listName">
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extend_js %}
+<script type="application/javascript">
+    $(function(){
+
+        //一等奖
+        $('#first_prize').click(function(e){
+            postPrize(1)
+        });
+
+        //二等奖
+        $('#second_prize').click(function(e){
+            postPrize(2);
+        });
+
+        //三等奖
+        $('#third_prize').click(function(e){
+            postPrize(3);
+        });
+    });
+
+    function postPrize(type){
+        var csrf = $('input').val();
+        $.post('/get_prize/',{'csrfmiddlewaretoken':csrf,'type':type},function(data){
+
+            if(data.code==0){
+                console.log(data.result)
+                var html ='';
+                $.each(data.result,function(index,item){
+                    html += '<tr><td>'+item+'</td></tr>';
+                });
+
+                $('#listName').html(html);
+            }else{
+                layer.alert(data.msg);
+            }
+        });
+    }
+</script>
+{% endblock %}
+

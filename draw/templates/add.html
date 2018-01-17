@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block extend_css %}
+<link rel="stylesheet" href="http://minicms.sumdy.deve/static/css/font-awesome.min.css?v=4.4.5">
+<link rel="stylesheet" href="http://minicms.sumdy.deve/static/css/animate.min.css">
+<link rel="stylesheet" href="http://minicms.sumdy.deve/static/css/style.min.css?">
+<style>
+    body{background-color: darkred;}
+    .container{transform: translateY(55%)}
+    a{color: #fff;}
+    .logo-name{font-size: 40px;letter-spacing:0.2em;}
+
+</style>
+{% endblock %}
+{% block title%}添加-{% endblock%}
+{% block content %}
+<div class="row">
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+
+                <h4 class="logo-name">点吧科技</h4>
+
+            </div>
+            <div>
+            <form class="m-t" role="form" action="" method="post">
+                <div class="form-group">
+                    {% csrf_token %}
+                    <input type="username" id="username" class="form-control" placeholder="姓 名" required="">
+                </div>
+                <button type="button" class="btn btn-primary block full-width m-b" id="loginBtn">添 加</button>
+                <p>
+                    <a href="/">返回首页</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="/person/">名单</a>
+                </p>
+
+
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extend_js %}
+<script>
+    $(function(){
+
+        //登录
+        $('#loginBtn').click(function(){
+            $('username').reset;
+
+
+            csrf = $('input').val();
+            username = $('#username').val();
+            if(!username){
+                layer.msg('请输入姓名',{icon:2});
+                return false;
+            }
+            $.post('/add/',{
+                'csrfmiddlewaretoken':csrf,
+                'name':username
+            },function(data){
+                if(data.code===0){
+                    layer.alert(data.msg,function(){
+                        location.href = '/add/';//跳转到成功页面
+                    });
+
+                }else{
+                    layer.msg(data.msg,{icon:2});
+                }
+            });
+        });
+    })
+</script>
+{% endblock %}

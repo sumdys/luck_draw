@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}年度抽奖-{% endblock %}
+{% block extend_css %}
+<style rel="stylesheet">
+    body{
+        background-color: red;color: white;
+    }
+    .container{width: 90%;margin-top:50px;}
+    .left_div,.right_div{text-align:center;}
+    .table{text-align:center;width: 50%;}
+    .list-unstyled li{
+        margin-top: 30px;
+    }
+    table td,th{font-size: 1em;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-md-12 row">
+    <div class="col-md-12 right_div">
+        <h1>名单</h1>
+        <div class="right_div">
+            <table class="table table-bordered" align="center" id="listName">
+                <tr align="center">
+                    <th>id</th>
+                    <th>姓名</th>
+                    <th>等奖</th>
+                </tr>
+                {% for val in list %}
+                <tr>
+                    <td>{{ val.id }}</td>
+                    <td>{{ val.name }}</td>
+                    <td>{{ val.type }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <a href="/add/">返回添加</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/">返回抽奖</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extend_js %}
+<script type="application/javascript">
+    $(function(){
+
+        //一等奖
+        $('#first_prize').click(function(e){
+            postPrize(1)
+        });
+
+        //二等奖
+        $('#second_prize').click(function(e){
+            postPrize(2);
+        });
+
+        //三等奖
+        $('#third_prize').click(function(e){
+            postPrize(3);
+        });
+    });
+
+    function postPrize(type){
+        var csrf = $('input').val();
+        $.post('/get_prize/',{'csrfmiddlewaretoken':csrf,'type':type},function(data){
+            if(data.code==0){
+                html = '<tr><td>杨嘉峰</td></tr>';
+                $('#listName').html(html);
+            }
+        });
+    }
+</script>
+{% endblock %}
+
