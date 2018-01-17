@@ -44,7 +44,7 @@ def add(request):
 
 # 获取中奖名单
 def get_prize(request):
-    Users.objects.all().update(type=0)
+    # Users.objects.all().update(type=0)
     if request.method=='POST':
         # 获取参数
         type = request.POST.get('type')
